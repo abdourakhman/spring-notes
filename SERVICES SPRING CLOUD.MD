@@ -28,6 +28,20 @@
                    pour actualiser il s'uffit de lancer une requete post avec un corps vide en json sur le endpoint localhost/actuator/refresh'
 
 
+## SERVICE D'ENREGISTREMENT
+---------------------------
+--> Côté serveur: installer la dépendance Eureka serveur de spring
+                -activer  la configuration avec @EnableEurekaServer dans le fichier principale
+                -configurer le service dans son fichier application.properties:
+                -configurer le port avec server.port=8888
+                -configurer le Nom avec spring.application.name=eureka
+                -Pour eviter qu'eureka ne s'enregistre lui meme: 
+                eureka.client.registerWithEureka=false
+                eureka.client.fetchRegistry=false
+
+--> Côté Client: activer l'enregistrement avec @EnableDiscoveryClient sur le fichier         principale               
+
+
 ## SERVICE DE ROUTAGE
 ---------------------
 Il s'agit d'un pare-feu applicatif qui permet de gérer les routages et les politiques de sécurité pour les services micro-services. Il peut être utilisé pour créer un point d'entrée unique pour l'ensemble de votre architecture de services, pour effectuer des opérations de routage basées sur les critères de métadonnées de service, pour gérer les politiques de sécurité et pour effectuer des opérations de transformation de requête et de réponse. En gros, il permet de centraliser la gestion des routes d'une application micro-services.
