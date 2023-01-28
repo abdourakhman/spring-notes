@@ -3,29 +3,31 @@
 ## SERVICE CONFIGURATION
 ---------------------
 
---> Côté serveur: installer la dépendance config serveur de spring
-                -activer  la configuration avec @EnableConfigServer dans le fichier principale
-                -configurer le service dans son fichier application.properties:
-                -configurer le port avec server.port=8888
-                -specifier  l'adresse ou se trouve le fichier de configuraion dossier loacale/Git
-                spring.cloud.config.server.git.uri= si c'est un dossier local : file://${user.home}/cloud-conf
-                                                    si c'est un repository distant urlRepo ex: https://github.com/abdourakhman/cloud-config
+--> Côté serveur: 
+installer la dépendance config serveur de spring
+-activer  la configuration avec @EnableConfigServer dans le fichier principale
+-configurer le service dans son fichier application.properties:
+-configurer le port avec server.port=8888
+-specifier  l'adresse ou se trouve le fichier de configuraion (dossier loacal / dépôt Git) avec la proprietésuivante:
+spring.cloud.config.server.git.uri=file://${user.home}/cloud-conf  (si c'est un dossier local)
+spring.cloud.config.server.git.uri= https://github.com/abdourakhman/cloud-config (si c'est un repository distant)
                                                             
-                Dans ce fichier de configuration, sera contenu tous les fichiers de configurations  des micro-services ex: custumer-sevice.properties 
-                Les configurations communes aux micro- services seront stockés dans le fichier application.properties' 
+Dans ce Dossier, sera contenu tous les fichiers de configurations  des micro-services ex: custumer-sevice.properties. Les configurations communes aux micro- services seront stockés dans un fichier application.properties' 
                 
 
--->Côté client: installer la dépendance config client de spring
-                -renommer le fichier application.properties en bootstrap.properties pour indiquer à spring de démarrer sur ce fichier de conf
-                -Dans son fichier bootstrap.properties, on configure le nom du micro service en lui donnant le même nom que le fichier de configuration du micro-service
-                ex: si le fichier de configuration exposé sur git ou le dossier local est company.properties alors spring.application.name=company
+-->Côté client: installer la dépendance config client de spring et la dépendance bootstrap cloud de spring
+-renommer le fichier application.properties en bootstrap.properties pour indiquer à spring de démarrer sur ce fichier de configuration
+-Dans son fichier bootstrap.properties, on configure le nom du micro service en lui donnant le même nom que le fichier de configuration du micro-service
+ ex: si le fichier de configuration exposé sur git ou le dossier local est company.properties alors spring.application.name=company (vice versa)
 
-                -Une fois que le micro service démarre on lui spécifie ou il doit recupérer le reste de  sa configuraion
-                spring.cloud.config.uri=http://localhost:8888  (serveur de configuration)
+-Une fois que le micro service démarre on lui spécifie ou il doit recupérer le reste de  sa configuraion avec la proprieté suivante:
+spring.cloud.config.uri=http://localhost:8888  (serveur de configuration)
+N'oubliez pas d'ajouter l'annotation @RefreshScope dans le fichier main, refreshScope détecte les changement de configuration
 
-                - la configuration du micro-service peut changer mais le micro service n'est pas au courant, C'est la qu'intervient le service Actuator
-                - 'Installer la dépendance Actuator de spring joignable sur localhost/actuator 
-                   pour actualiser il s'uffit de lancer une requete post avec un corps vide en json sur le endpoint localhost/actuator/refresh'
+la configuration du micro-service peut changer mais le micro service n'est pas au courant, C'est la qu'intervient le service Actuator et l'annotation
+@RefreshScope
+Installer la dépendance Actuator de spring joignable sur localhost/actuator pour actualiser il s'uffit de lancer une requete post avec un 
+corps vide en json sur le endpoint localhost/actuator/refresh'
 
 
 ## SERVICE D'ENREGISTREMENT
@@ -39,7 +41,7 @@
                 eureka.client.registerWithEureka=false
                 eureka.client.fetchRegistry=false
 
---> Côté Client: activer l'enregistrement avec @EnableDiscoveryClient sur le fichier         principale               
+--> Côté Client: activer l'enregistrement avec @EnableDiscoveryClient sur le fichier principale               
 
 
 ## SERVICE DE ROUTAGE
@@ -92,3 +94,7 @@ Il s'agit d'un pare-feu applicatif qui permet de gérer les routages et les poli
                   }
 
                   url de test: http://localhost:8008/CUSTUMER-SERVICE/custumers
+ 
+## SERVICE OPENFEIGN
+---------------------
+Il est utilisé por la communication entre micro services
